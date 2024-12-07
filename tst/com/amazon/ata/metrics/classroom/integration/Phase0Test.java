@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class Phase0Test {
+
     private static final String TABLE_NAME_PREFIX = "Metrics-";
     private static final String RESERVATIONS_TABLE_NAME = TABLE_NAME_PREFIX + "Reservations";
 
@@ -30,5 +31,6 @@ public class Phase0Test {
         }
         fail(String.format("Did not find expected table, '%s'", tableName));
     }
+
 }
 

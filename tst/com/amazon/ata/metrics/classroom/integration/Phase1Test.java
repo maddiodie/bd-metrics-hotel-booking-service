@@ -35,8 +35,10 @@ public class Phase1Test {
 
     @BeforeEach
     private void setup() {
-        metricsPublisher = spy(new MetricsPublisher(AmazonCloudWatchClientBuilder.standard().withRegion(Regions.US_WEST_2).build()));
-        reservationDao = new ReservationDao(new DynamoDBMapper(DynamoDbClientProvider.getDynamoDBClient(Regions.US_WEST_2)));
+        metricsPublisher = spy(new MetricsPublisher(AmazonCloudWatchClientBuilder.standard()
+                .withRegion(Regions.US_WEST_2).build()));
+        reservationDao = new ReservationDao(new DynamoDBMapper(DynamoDbClientProvider
+                .getDynamoDBClient(Regions.US_WEST_2)));
         bookReservationActivity = new BookReservationActivity(reservationDao, metricsPublisher);
         cancelReservationActivity = new CancelReservationActivity(reservationDao, metricsPublisher);
         modifyReservationActivity = new ModifyReservationActivity(reservationDao, metricsPublisher);
@@ -44,7 +46,6 @@ public class Phase1Test {
 
     @Test
     public void bookReservationActivity_createsReservation_logsBookingCountMetric() {
-
         // GIVEN
         Reservation reservation = TestDataProvider.buildReservationObject();
 
@@ -52,33 +53,39 @@ public class Phase1Test {
         Reservation result = bookReservationActivity.handleRequest(reservation);
 
         // THEN
-        verify(metricsPublisher, times(1)).addMetric(BOOKINGS_COUNT, 1, StandardUnit.Count);
+        verify(metricsPublisher, times(1)).addMetric(BOOKINGS_COUNT, 1,
+                StandardUnit.Count);
     }
 
     @Test
     public void cancelReservationActivity_canceledReservation_logsCanceledCountMetric() {
-
         // GIVEN
-        Reservation bookedReservation = bookReservationActivity.handleRequest(TestDataProvider.buildReservationObject());
+        Reservation bookedReservation = bookReservationActivity.handleRequest(TestDataProvider
+                .buildReservationObject());
 
         // WHEN
-        Reservation result = cancelReservationActivity.handleRequest(bookedReservation.getReservationId());
+        Reservation result = cancelReservationActivity.handleRequest(bookedReservation
+                .getReservationId());
 
         // THEN
-        verify(metricsPublisher, times(1)).addMetric(CANCELATIONS_COUNT, 1, StandardUnit.Count);
+        verify(metricsPublisher, times(1)).addMetric(CANCELATIONS_COUNT, 1,
+                StandardUnit.Count);
     }
 
     @Test
     public void modifyReservationActivity_modifiedReservation_logsModifiedCountMetric() {
         // GIVEN
-        Reservation bookedReservation = bookReservationActivity.handleRequest(TestDataProvider.buildReservationObject());
+        Reservation bookedReservation = bookReservationActivity.handleRequest(TestDataProvider
+                .buildReservationObject());
 
         // WHEN
-        UpdatedReservation result = modifyReservationActivity.handleRequest(bookedReservation.getReservationId(),
-            bookedReservation.getCheckInDate(), 7);
+        UpdatedReservation result = modifyReservationActivity.handleRequest(bookedReservation
+                        .getReservationId(),
+        bookedReservation.getCheckInDate(), 7);
 
         // THEN
-        verify(metricsPublisher, times(1)).addMetric(MODIFICATIONS_COUNT, 1, StandardUnit.Count);
+        verify(metricsPublisher, times(1)).addMetric(MODIFICATIONS_COUNT, 1,
+                StandardUnit.Count);
     }
 
 }

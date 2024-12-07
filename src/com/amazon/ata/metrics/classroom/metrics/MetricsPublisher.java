@@ -10,6 +10,8 @@ import javax.inject.Inject;
 
 /**
  * Contains operations for publishing metrics.
+ *
+ * Class to store metrics in AWS CloudWatch.
  */
 public class MetricsPublisher {
 
@@ -26,7 +28,6 @@ public class MetricsPublisher {
 
     /**
      * Publishes the given metric to CloudWatch.
-     *
      * @param metricName name of metric to publish.
      * @param value value of metric.
      * @param unit unit of metric.
@@ -38,7 +39,6 @@ public class MetricsPublisher {
 
     /**
      * Helper method that builds the PutMetricDataRequest object used to publish to CloudWatch.
-     *
      * @param metricName name of metric
      * @param value value of metric
      * @param unit unit of metric.
@@ -46,13 +46,12 @@ public class MetricsPublisher {
      */
     private PutMetricDataRequest buildMetricDataRequest(final String metricName, final double value,
                                                         final StandardUnit unit) {
-
         final Dimension service = new Dimension()
             .withName(MetricsConstants.SERVICE)
             .withValue(MetricsConstants.SERVICE_NAME);
 
-        // right now this service is only in the US, so hardcoding US for now. When we launch in other marketplaces
-        // we'll want to make this marketplace value configurable
+        // right now this service is only in the US, so hardcoding US for now
+        // when we launch in other marketplace we'll want to make this marketplace value configurable
         final Dimension marketplace = new Dimension()
             .withName(MetricsConstants.MARKETPLACE)
             .withValue(MetricsConstants.US_MARKETPLACE);
@@ -69,4 +68,5 @@ public class MetricsPublisher {
 
         return request;
     }
+
 }
